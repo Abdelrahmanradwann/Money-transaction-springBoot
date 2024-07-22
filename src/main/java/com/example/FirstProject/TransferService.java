@@ -5,10 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
-public class FirstProjectApplication {
+public class TransferService {
 		public static void main(String[] args) {
 
-		ApplicationContext app = SpringApplication.run(FirstProjectApplication.class, args);
+		ApplicationContext app = SpringApplication.run(TransferService.class, args);
 
 	}
 
