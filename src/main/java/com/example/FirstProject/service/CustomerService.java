@@ -1,5 +1,7 @@
 package com.example.FirstProject.service;
 
+import com.example.FirstProject.exception.custom.CustomerAlreadyExistsException;
+import com.example.FirstProject.exception.custom.CustomerNotFoundException;
 import com.example.FirstProject.model.Account;
 import com.example.FirstProject.model.Customer;
 import com.example.FirstProject.dto.RetrieveCustomerDTO;
@@ -7,15 +9,12 @@ import com.example.FirstProject.dto.UpdateCustomerDTO;
 import com.example.FirstProject.dto.CustomerDTO;
 import com.example.FirstProject.model.enums.AccountType;
 import com.example.FirstProject.model.enums.Currency;
-import com.example.FirstProject.model.enums.Gender;
 import com.example.FirstProject.repository.AccountRepository;
 import com.example.FirstProject.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.util.*;
 
 
 @Service
@@ -24,7 +23,17 @@ public class CustomerService implements CustomerData{
     private CustomerRepository customerRepository;
     private AccountRepository accountRepository;
     @Override
-    public Customer createCustomer(CustomerDTO customer) {
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public Customer createCustomer(CustomerDTO customer) throws CustomerAlreadyExistsException {
+        if(this.customerRepository.existsByEmail(customer.getEmail())){
+            throw new CustomerAlreadyExistsException(String.format("Customer with email %s already exists",customer.getEmail()));
+        }
+        if(this.customerRepository.existsByNationalId(customer.getNationalId())){
+            throw new CustomerAlreadyExistsException(String.format("Customer with national id %s already exists",customer.getNationalId()));
+        }
+        if(this.customerRepository.existsByPhoneNumber(customer.getPhoneNumber())){
+            throw new CustomerAlreadyExistsException(String.format("Customer with national id %s already exists",customer.getNationalId()));
+        }
         Account account =  Account
                 .builder()
                 .accountNumber("123456789")
@@ -70,20 +79,21 @@ public class CustomerService implements CustomerData{
     }
 
     @Override
-    public RetrieveCustomerDTO getCustById(Long id) {
+    public RetrieveCustomerDTO getCustById(Long id) throws CustomerNotFoundException {
         Customer customer = this.customerRepository.findById(id)
-                .orElseThrow(()->new IllegalArgumentException(String.format("Customer with id = %s not found",id)));
+                .orElseThrow(()->new CustomerNotFoundException(String.format("Customer with id = %s not found",id)));
         return customer.toDTO();
     }
     @Override
-    public RetrieveCustomerDTO getCustomerByEmail(String email) {
+    public RetrieveCustomerDTO getCustomerByEmail(String email) throws CustomerNotFoundException {
         Customer customer = this.customerRepository.findByemailEquals(email)
-                .orElseThrow(()->new IllegalArgumentException("error"));
+                .orElseThrow(()->new CustomerNotFoundException(String.format("Customer with email = %s not found",email)));
         return customer.toDTO();
     }
     @Override
-    public RetrieveCustomerDTO updateCust(Long id, UpdateCustomerDTO c) {
-        Customer customer = customerRepository.findById(id).orElseThrow(()->new IllegalArgumentException("eRROR"));
+    public RetrieveCustomerDTO updateCust(Long id, UpdateCustomerDTO c) throws CustomerNotFoundException{
+        Customer customer = this.customerRepository.findById(id)
+                .orElseThrow(()->new CustomerNotFoundException(String.format("Customer with id = %s not found",id)));
         customer.setFname(c.getFname());
         customer.setLname(c.getLname());
         customer.setDOB(c.getDOB());
@@ -94,10 +104,10 @@ public class CustomerService implements CustomerData{
         return customer.toDTO();
     }
     @Override
-    public Boolean deleteCustomer(Long id) {
-        Customer c = customerRepository.findById(id)
-                .orElseThrow(()->new IllegalArgumentException("Error while deleting customer"));
-        this.customerRepository.delete(c);
+    public Boolean deleteCustomer(Long id) throws CustomerNotFoundException {
+        Customer customer = this.customerRepository.findById(id)
+                .orElseThrow(()->new CustomerNotFoundException(String.format("Customer with id = %s not found",id)));
+        this.customerRepository.delete(customer);
         return true;
     }
     @Override

@@ -37,7 +37,7 @@ public class Customer {
     private  String lname;
     @Column(nullable = false)
     private LocalDate DOB;
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String phoneNumber;
     @Column(nullable = false)
     private String nationality;
@@ -55,7 +55,6 @@ public class Customer {
     @OneToOne
     @JoinColumn(name = "accountId")
     private Account account;
-
 
     public RetrieveCustomerDTO toDTO() {
 
