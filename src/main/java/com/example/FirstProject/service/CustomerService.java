@@ -7,6 +7,7 @@ import com.example.FirstProject.dto.RetrieveCustomerDTO;
 import com.example.FirstProject.dto.UpdateCustomerDTO;
 import com.example.FirstProject.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 
@@ -56,16 +57,6 @@ public class CustomerService implements CustomerData{
     }
 
 
-    @Override
-   public String verifyCustomer(String email,String password) throws CustomerNotFoundException{
-        Customer customer = this.customerRepository.findByemailEquals(email)
-                .orElseThrow(()->new CustomerNotFoundException(String.format("Customer with email = %s not found",email)));
 
-        if(!customer.getPassword().equals(password)){
-            throw new CustomerNotFoundException(String.format("Customer with email = %s not found",email));
-        }
-//        return ValidUser.generateToken(email,customer.getId());
-        return "dummy";
-    }
 
 }
