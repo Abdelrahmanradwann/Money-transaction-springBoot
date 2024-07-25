@@ -1,28 +1,21 @@
 package com.example.FirstProject.controller;
 
-
-import com.example.FirstProject.exception.custom.CustomerAlreadyExistsException;
 import com.example.FirstProject.exception.custom.CustomerNotFoundException;
 import com.example.FirstProject.model.Customer;
 import com.example.FirstProject.dto.RetrieveCustomerDTO;
 import com.example.FirstProject.dto.UpdateCustomerDTO;
-import com.example.FirstProject.dto.CustomerDTO;
 import com.example.FirstProject.service.CustomerData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
-@RequestMapping("api")
+@RequestMapping("/api")
 @RestController
 @Validated
 public class CustomerController {
     @Autowired
     private CustomerData customerData;
-    @PostMapping("/customer")
-    public Customer createCustomer(@RequestBody CustomerDTO customer) throws CustomerAlreadyExistsException {
-        return  this.customerData.createCustomer(customer);
-    }
     @GetMapping("/customer/{id}")
     public RetrieveCustomerDTO getCustomerById(@PathVariable Long id) throws CustomerNotFoundException {
         return this.customerData.getCustById(id);
@@ -43,6 +36,12 @@ public class CustomerController {
     @GetMapping("/customer/latest")
     public Customer getLatestCustomer(){
         return this.customerData.getLatestCust();
+    }
+
+    @GetMapping("/customer/login/{email}/{password}")
+    public String  login(@PathVariable("email") String email
+            , @PathVariable("password") String password) throws CustomerNotFoundException{
+        return this.customerData.verifyCustomer(email,password);
     }
 
 }

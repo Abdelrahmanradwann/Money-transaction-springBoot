@@ -1,19 +1,17 @@
 package com.example.FirstProject.model;
 
-import com.example.FirstProject.dto.CustomerDTO;
+
 import com.example.FirstProject.dto.RetrieveCustomerDTO;
 import com.example.FirstProject.model.enums.Gender;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 
 @Entity
@@ -21,6 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Builder
+@Validated
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +28,7 @@ public class Customer {
     @Column(nullable = false,unique = true)
     private String email;
     @Column(nullable = false)
-    @Size(min=5,max=20)
+    @Size(min=5)
     private String password;
     @Column(nullable = false)
     private  String fname;

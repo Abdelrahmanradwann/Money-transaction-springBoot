@@ -1,16 +1,10 @@
 package com.example.FirstProject.dto;
 
 import com.example.FirstProject.model.enums.Gender;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.UUID;
+
 
 
 @AllArgsConstructor

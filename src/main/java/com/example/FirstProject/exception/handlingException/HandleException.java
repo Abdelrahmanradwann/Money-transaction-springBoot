@@ -3,13 +3,13 @@ package com.example.FirstProject.exception.handlingException;
 import com.example.FirstProject.exception.custom.CustomerAlreadyExistsException;
 import com.example.FirstProject.exception.custom.CustomerNotFoundException;
 import com.example.FirstProject.exception.errorResponse.ErrorResponse;
-import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+
 
 @ControllerAdvice
 public class HandleException {
@@ -24,14 +24,15 @@ public class HandleException {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<Object> userArgumentViolation(MethodArgumentNotValidException exception) {
-//
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> authenticationExceptionHandling (AuthenticationException exception, WebRequest request){
+        return new ResponseEntity<>(new ErrorResponse(exception.getMessage(),HttpStatus.UNAUTHORIZED),HttpStatus.UNAUTHORIZED);
+    }
+
+//    @ExceptionHandler(Exception.class)
+//    public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request)
+//    {
+//        return new ResponseEntity<>(new ErrorResponse(ex.getMessage(),HttpStatus.UNAUTHORIZED),HttpStatus.UNAUTHORIZED);
 //    }
-//
-//    @ExceptionHandler(value = ConstraintViolationException.class)
-//    public ResponseEntity<Object> userConstraintViolation(ConstraintViolationException exception) {
-//        ErrorResponse error = new ErrorResponse(exception.getMessage(),HttpStatus.BAD_REQUEST);
-//        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-//    }
+
 }

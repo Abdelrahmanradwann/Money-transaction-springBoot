@@ -1,15 +1,11 @@
 package com.example.FirstProject.dto;
 
-import com.example.FirstProject.model.Account;
+
 import com.example.FirstProject.model.enums.AccountType;
 import com.example.FirstProject.model.enums.Currency;
-import jakarta.persistence.*;
-import jdk.jshell.Snippet;
+
 import lombok.Builder;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -27,7 +23,5 @@ public class AccountDTO {
     private LocalDateTime updatedAt;
     private LocalDateTime createdAt;
     private Boolean active=true;
-
-
 
 }

@@ -1,7 +1,6 @@
 package com.example.FirstProject.model;
 
 import com.example.FirstProject.dto.AccountDTO;
-import com.example.FirstProject.dto.CustomerDTO;
 import com.example.FirstProject.model.enums.AccountType;
 import com.example.FirstProject.model.enums.Currency;
 import jakarta.persistence.*;
@@ -11,8 +10,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data

@@ -1,6 +1,6 @@
 package com.example.FirstProject.dto;
 
-import com.example.FirstProject.model.Account;
+
 import com.example.FirstProject.model.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +23,6 @@ public class RetrieveCustomerDTO {
     private String address;
     private Gender gender;
     private AccountDTO account;
+
+
 }
