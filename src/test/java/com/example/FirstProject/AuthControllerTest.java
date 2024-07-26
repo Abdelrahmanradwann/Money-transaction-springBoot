@@ -1,80 +1,69 @@
 package com.example.FirstProject;
 
-import com.example.FirstProject.controller.AuthController;
+
 import com.example.FirstProject.dto.CustomerDTO;
 import com.example.FirstProject.exception.custom.CustomerAlreadyExistsException;
-import com.example.FirstProject.model.Customer;
-import com.example.FirstProject.model.enums.Gender;
+import com.example.FirstProject.service.CustomerService;
 import com.example.FirstProject.service.security.IAuthenticator;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDate;
-
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AuthController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class AuthControllerTest {
 
-    @Mock
+    // MockBean for dummy object that 'll be created
+    @MockBean
     private IAuthenticator auth;
 
-    @InjectMocks
-    private AuthController authController;
-
+    // MockMvc is a class used for testing, and it is configured
+    // that when we write @SpringBootTest and @AutoConfi.... it generates all the methods that we could need to test,
+    // so we don't need to put @Component or @Service on top of class MockMvc
+    @Autowired
     private MockMvc mockMvc;
 
-    public AuthControllerTest() {
-        MockitoAnnotations.openMocks(this);
-        this.mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
-    }
-
     @Test
-    public void testRegister() throws Exception, CustomerAlreadyExistsException {
-        // Create and set up a CustomerDTO object with test data
-        CustomerDTO customerDTO = CustomerDTO.builder()
-                .email("test@example.com")
-                .password("password123")
-                .fname("John")
-                .lname("Doe")
-                .DOB(LocalDate.of(1990, 1, 1)) // Example date of birth
-                .nationality("American")
-                .nationalId("123456789")
-                .address("123 Main St, Springfield")
-                .gender(Gender.MALE)
-                .build();
-
-        // Create a Customer object to return from the mocked service method
-        Customer customer = Customer.builder()
-                .id(1L)
-                .email(customerDTO.getEmail())
-                .password(customerDTO.getPassword())
-                .fname(customerDTO.getFname())
-                .lname(customerDTO.getLname())
-                .DOB(customerDTO.getDOB())
-                .nationality(customerDTO.getNationality())
-                .nationalId(customerDTO.getNationalId())
-                .address(customerDTO.getAddress())
-                .gender(customerDTO.getGender())
-                .build();
-
-        // Mock the behavior of the auth.register method
-        when(auth.register(customerDTO)).thenReturn(customer);
-
-        // Perform the POST request and verify the response
+    void testValidRegisterCustomer() throws Exception {
         mockMvc.perform(post("/api/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"test@example.com\",\"password\":\"password123\",\"fname\":\"John\",\"lname\":\"Doe\",\"DOB\":\"1990-01-01\",\"nationality\":\"American\",\"nationalId\":\"123456789\",\"address\":\"123 Main St, Springfield\",\"gender\":\"MALE\"}")
-                        .accept(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\r\n    \"email\": \"hh@yahoo.com\",\r\n    \"password\": \"123456\",\r\n  " +
+                        "  \"fname\": \"John\",\r\n    \"lname\": \"Doe\",\r\n   " +
+                        " \"DOB\": \"1990-01-01\",\r\n    \"phoneNumber\": \"01011799212\",\r\n " +
+                        "   \"nationality\": \"American\",\r\n   " +
+                        " \"nationalId\": \"123456\",\r\n    " +
+                        "\"address\": \"123 Main St, Springfield, IL\",\r\n  " +
+                        "  \"gender\": \"MALE\"\r\n}")
+                )
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void testInvalidRegisterCustomer() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\r\n    \"email\": \"hh@yahoo.com\",\r\n    \"password\": \"123456\",\r\n ")
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCustomerAlredyExists() throws  Exception {
+        Mockito.when(auth.register(any(CustomerDTO.class)))
+                .thenThrow(new CustomerAlreadyExistsException("User already exixts"));
+        mockMvc.perform(post("/api/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\r\n    \"email\": \"hh@yahoo.com\",\r\n    \"password\": \"123456\",\r\n "))
+                .andExpect(status().isBadRequest());
+    }
 }

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
@@ -37,7 +38,7 @@ public class CustomerController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    public RetrieveCustomerDTO getCustomerById(@PathVariable Long id) throws CustomerNotFoundException {
+    public RetrieveCustomerDTO getCustomerById(@PathVariable @Valid Long id) throws CustomerNotFoundException {
         return this.customerData.getCustById(id);
     }
     @GetMapping("/customer/email/{email}")
@@ -54,7 +55,7 @@ public class CustomerController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    public RetrieveCustomerDTO getCustomerByEmail(@PathVariable String email) throws CustomerNotFoundException{
+    public RetrieveCustomerDTO getCustomerByEmail(@PathVariable @Valid String email) throws CustomerNotFoundException{
         return this.customerData.getCustomerByEmail(email);
     }
     @PutMapping("/customer/{id}")
@@ -79,7 +80,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public RetrieveCustomerDTO updateCustomer(@PathVariable Long id,
-                                              @RequestBody UpdateCustomerDTO customer) throws CustomerNotFoundException{
+                                              @RequestBody @Valid UpdateCustomerDTO customer) throws CustomerNotFoundException{
         return this.customerData.updateCust(id,customer);
     }
     @DeleteMapping("/customer/{id}")

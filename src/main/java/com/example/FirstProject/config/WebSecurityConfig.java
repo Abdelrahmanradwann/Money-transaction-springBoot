@@ -37,6 +37,7 @@ public class WebSecurityConfig {
     }
 
 
+    // These are layers or filters for authentication and disable some routes from auth
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http) throws Exception{
         http.csrf(AbstractHttpConfigurer::disable)

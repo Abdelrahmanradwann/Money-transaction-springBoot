@@ -7,7 +7,7 @@ import com.example.FirstProject.dto.UpdateCustomerDTO;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-@Service
+
 public interface CustomerData {
 
     /**

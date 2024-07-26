@@ -39,8 +39,9 @@ public class CustomerService implements CustomerData{
         customer.setAddress(c.getAddress());
         customer.setPassword(c.getPassword());
         customer.setNationality(c.getNationality());
-        this.customerRepository.save(customer);
-        return customer.toDTO();
+        Customer cx = this.customerRepository.save(customer);
+        System.out.println(cx.getLname());
+        return cx.toDTO();
     }
     @Override
     public Boolean deleteCustomer(Long id) throws CustomerNotFoundException {

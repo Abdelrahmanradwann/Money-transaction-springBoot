@@ -12,6 +12,7 @@ import com.example.FirstProject.model.enums.Currency;
 import com.example.FirstProject.repository.AccountRepository;
 import com.example.FirstProject.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -34,7 +36,7 @@ public class Authenticator implements IAuthenticator {
     private final JwtUtils jwtUtils;
     private AuthenticationManager authenticationManager;
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Customer register(CustomerDTO customer)throws CustomerAlreadyExistsException{
         if(this.customerRepository.existsByEmail(customer.getEmail())){
             throw new CustomerAlreadyExistsException(String.format("Customer with email %s already exists",customer.getEmail()));
@@ -90,9 +92,12 @@ public class Authenticator implements IAuthenticator {
     }
 
     public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequestDTO) throws CustomerAlreadyExistsException{
+        // Validates the info of user
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDTO.getEmail(),loginRequestDTO.getPassword()));
 
+        // Save his info and like marks it that it is valid for the remaining functionality
+        // and routes that will be used
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
         CustomerDetailsImpl customerDetails = (CustomerDetailsImpl) authentication.getPrincipal();

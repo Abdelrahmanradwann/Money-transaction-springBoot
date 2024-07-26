@@ -28,7 +28,12 @@ public class JwtUtils {
     private final int  jwtExpiration  = 86400000 ;
 
     public String generateJwtToken(Authentication authentication){
+
+        // authentication.getPrincipal -> it gets the current authenticated user (Payload for ex:)
         CustomerDetailsImpl userPrincipal = (CustomerDetailsImpl) authentication.getPrincipal();
+
+        // generates and returns the token
+        // sihnWith -> it hashes the token after generation
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())

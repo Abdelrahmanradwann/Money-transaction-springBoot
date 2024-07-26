@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
@@ -41,7 +42,7 @@ public class AuthController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    public Customer register(@RequestBody CustomerDTO customer) throws CustomerAlreadyExistsException {
+    public Customer register(@RequestBody @Valid CustomerDTO customer) throws CustomerAlreadyExistsException {
         return this.auth.register(customer);
     }
 
@@ -55,7 +56,7 @@ public class AuthController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequestDTO) throws CustomerAlreadyExistsException{
+    public LoginResponseDTO login(@RequestBody @Valid LoginRequestDTO loginRequestDTO) throws CustomerAlreadyExistsException{
         return this.auth.login(loginRequestDTO);
     }
 }
