@@ -5,7 +5,7 @@ import com.example.FirstProject.model.Customer;
 import com.example.FirstProject.dto.RetrieveCustomerDTO;
 import com.example.FirstProject.dto.UpdateCustomerDTO;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
+
 
 
 public interface CustomerData {
@@ -53,5 +53,5 @@ public interface CustomerData {
      *
      * @return the latest customer details wrapped in a {@link Customer}
      */
-    Customer getLatestCust();
+
 }

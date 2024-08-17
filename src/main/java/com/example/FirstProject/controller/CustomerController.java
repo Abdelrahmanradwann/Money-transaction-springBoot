@@ -1,7 +1,6 @@
 package com.example.FirstProject.controller;
 
 import com.example.FirstProject.exception.custom.CustomerNotFoundException;
-import com.example.FirstProject.model.Customer;
 import com.example.FirstProject.dto.RetrieveCustomerDTO;
 import com.example.FirstProject.dto.UpdateCustomerDTO;
 import com.example.FirstProject.service.CustomerData;
@@ -13,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -95,10 +93,6 @@ public class CustomerController {
     )
     public Boolean deleteCustomer(@PathVariable Long id) throws CustomerNotFoundException{
         return this.customerData.deleteCustomer(id);
-    }
-    @GetMapping("/customer/latest")
-    public Customer getLatestCustomer(){
-        return this.customerData.getLatestCust();
     }
 
 

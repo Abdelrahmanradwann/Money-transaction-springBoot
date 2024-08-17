@@ -32,4 +32,6 @@ public class CustomerDTO {
     @NonNull
     private final Gender gender;
 
+    private AccountDTO account;
+
 }

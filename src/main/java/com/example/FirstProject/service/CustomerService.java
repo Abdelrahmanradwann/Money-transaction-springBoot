@@ -7,7 +7,6 @@ import com.example.FirstProject.dto.RetrieveCustomerDTO;
 import com.example.FirstProject.dto.UpdateCustomerDTO;
 import com.example.FirstProject.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 
@@ -40,7 +39,6 @@ public class CustomerService implements CustomerData{
         customer.setPassword(c.getPassword());
         customer.setNationality(c.getNationality());
         Customer cx = this.customerRepository.save(customer);
-        System.out.println(cx.getLname());
         return cx.toDTO();
     }
     @Override
@@ -50,11 +48,20 @@ public class CustomerService implements CustomerData{
         this.customerRepository.delete(customer);
         return true;
     }
-    @Override
-    public Customer getLatestCust(){
-        return this.customerRepository
-                .findTopByOrderByRegisterDesc()
-                .orElseThrow(()->new IllegalArgumentException("No Customer found"));
+
+
+    public RetrieveCustomerDTO checkCustomerEmail(String email) throws CustomerNotFoundException {
+        Customer customer = customerRepository.findUserByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException(String.format("Customer with Id %s not found", email)));
+        return customer.toDTO();
+    }
+
+
+    public RetrieveCustomerDTO getCustomerByAccountNumber(String accountNumber) throws CustomerNotFoundException {
+        Customer customer = customerRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new CustomerNotFoundException("Account number not found"));
+        return customer.toDTO();
+
     }
 
 

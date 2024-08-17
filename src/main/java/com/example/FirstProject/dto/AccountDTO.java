@@ -1,8 +1,8 @@
 package com.example.FirstProject.dto;
 
 
+import com.example.FirstProject.dto.enums.AccountCurrency;
 import com.example.FirstProject.model.enums.AccountType;
-import com.example.FirstProject.model.enums.Currency;
 
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class AccountDTO {
     private String accountNumber;
     private String accountName;
     private Double balance;
-    private Currency currency;
+    private AccountCurrency currency;
     private AccountType accountType;
     private LocalDate accountCreationDate;
     private String accountDescription;

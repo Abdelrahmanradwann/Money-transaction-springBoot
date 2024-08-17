@@ -4,15 +4,14 @@ package com.example.FirstProject.service.security;
 import com.example.FirstProject.dto.CustomerDTO;
 import com.example.FirstProject.dto.LoginRequestDTO;
 import com.example.FirstProject.dto.LoginResponseDTO;
+import com.example.FirstProject.dto.enums.AccountCurrency;
 import com.example.FirstProject.exception.custom.CustomerAlreadyExistsException;
 import com.example.FirstProject.model.Account;
 import com.example.FirstProject.model.Customer;
 import com.example.FirstProject.model.enums.AccountType;
-import com.example.FirstProject.model.enums.Currency;
 import com.example.FirstProject.repository.AccountRepository;
 import com.example.FirstProject.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,7 +35,8 @@ public class Authenticator implements IAuthenticator {
     private final JwtUtils jwtUtils;
     private AuthenticationManager authenticationManager;
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional(rollbackFor = Exception.class, isolation = Isolation.READ_COMMITTED)
+    // ensures atomic transactions and prevent dirty reads
     public Customer register(CustomerDTO customer)throws CustomerAlreadyExistsException{
         if(this.customerRepository.existsByEmail(customer.getEmail())){
             throw new CustomerAlreadyExistsException(String.format("Customer with email %s already exists",customer.getEmail()));
@@ -50,9 +50,9 @@ public class Authenticator implements IAuthenticator {
         Account account =  Account
                 .builder()
                 .accountNumber(UUID.randomUUID().toString())
-                .accountName("John Doe's Savings Account")
+                .accountName(customer.getFname())
                 .balance(1000.00)
-                .currency(Currency.EGP)
+                .currency(AccountCurrency.EGP)
                 .accountType(AccountType.BUSINESS)
                 .accountDescription("Primary savings account")
                 .active(true)
@@ -74,19 +74,6 @@ public class Authenticator implements IAuthenticator {
                 .account(account)
                 .build();
 
-        //?????
-//       Customer cc = new Customer(
-//                customer.getEmail(),
-//                customer.getPassword(),
-//                customer.getFname(),
-//                customer.getLname(),
-//                customer.getDOB(),
-//                customer.getNationality(),
-//                customer.getNationalId(),
-//                customer.getAddress(),
-//                customer.getGender())
-//
-//        )
         this.customerRepository.save(c);
         return c;
     }

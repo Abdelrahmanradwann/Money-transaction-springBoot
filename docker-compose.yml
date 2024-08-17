@@ -1,11 +1,12 @@
+version: '3.8'
 services:
   app:
     build: .
     container_name: money-service-container
     environment:
-      - SPRING_DATASOURCE_URL=
-      - SPRING_DATASOURCE_USERNAME=
-      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_DATASOURCE_URL=jdbc:
+      - SPRING_DATASOURCE_USERNAME:
+      - SPRING_DATASOURCE_PASSWORD:
     ports:
       - "8080:8080"
     depends_on:

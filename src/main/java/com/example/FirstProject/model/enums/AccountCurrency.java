@@ -1,6 +1,6 @@
 package com.example.FirstProject.model.enums;
 
-public enum Currency {
+public enum AccountCurrency {
     USD,
     EUR,
     EGP,

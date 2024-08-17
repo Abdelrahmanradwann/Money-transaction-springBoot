@@ -51,9 +51,9 @@ public class Customer {
     @Column(nullable = false)
     private LocalDateTime register ;
 
-    @OneToOne
-    @JoinColumn(name = "accountId")
+    @OneToOne(fetch = FetchType.EAGER)
     private Account account;
+
 
     public RetrieveCustomerDTO toDTO() {
 

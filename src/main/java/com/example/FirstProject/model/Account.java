@@ -1,8 +1,8 @@
 package com.example.FirstProject.model;
 
 import com.example.FirstProject.dto.AccountDTO;
+import com.example.FirstProject.dto.enums.AccountCurrency;
 import com.example.FirstProject.model.enums.AccountType;
-import com.example.FirstProject.model.enums.Currency;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +29,7 @@ public class Account {
     private Double balance;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Currency currency;
+    private AccountCurrency currency;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
@@ -41,12 +41,15 @@ public class Account {
     private LocalDateTime createdAt;
     @Column(nullable = false)
     private Boolean active;
-    @OneToOne(mappedBy = "account")
-    private Customer customer;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "account_id")
+    private Account account;
+
     public AccountDTO toDTO() {
         return AccountDTO
                 .builder()
                 .id(this.getId())
+                .accountNumber(this.getAccountNumber())
                 .accountType(this.getAccountType())
                 .accountName(this.getAccountName())
                 .balance(this.getBalance())

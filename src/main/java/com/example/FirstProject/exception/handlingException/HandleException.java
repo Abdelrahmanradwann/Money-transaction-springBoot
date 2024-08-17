@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 
+
 @ControllerAdvice
 public class HandleException {
     @ExceptionHandler(value = CustomerAlreadyExistsException.class)
@@ -29,10 +30,16 @@ public class HandleException {
         return new ResponseEntity<>(new ErrorResponse(exception.getMessage(),HttpStatus.UNAUTHORIZED),HttpStatus.UNAUTHORIZED);
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request)
-//    {
-//        return new ResponseEntity<>(new ErrorResponse(ex.getMessage(),HttpStatus.UNAUTHORIZED),HttpStatus.UNAUTHORIZED);
-//    }
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> runtimeExceptionHandling(RuntimeException exception, WebRequest request) {
+        return new ResponseEntity<>(new ErrorResponse(exception.getMessage(), HttpStatus.BAD_REQUEST),
+                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> globalExceptionHandling(Exception exception, WebRequest request) {
+        return new ResponseEntity<>(new ErrorResponse(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }
